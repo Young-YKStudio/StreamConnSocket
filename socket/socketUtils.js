@@ -2,6 +2,7 @@ const testFunction = require('./functions/testFunction')
 const getPostRequest = require('./functions/getPost')
 const CreatePost = require('./functions/createPost')
 const CreateComment = require('./functions/createComment')
+const testChatFunctions = require('./functions/testChatFunctions')
 
 exports.connection = (io) => {
   io.on('connection', (socket) => {
@@ -13,6 +14,24 @@ exports.connection = (io) => {
 
     socket.on('test', (socket, loggedUser) => {
       testFunction(loggedUser)
+    })
+
+    socket.on('testChat', async (req) => {
+      console.log('chat connected', req)
+      // if recieved request is initial, 
+      if(req === 'initialConnection') {
+        // return collected chat data
+        const chatData = await testChatFunctions(req)
+        socket.emit("testChat", chatData);
+      } else {
+        const chatInputData = await testChatFunctions(req)
+        socket.broadcast.emit("testChat", chatInputData);
+        // if recieved request is not initial
+        // register new chat to DB
+        // wait for return from DB
+        // return with updated chat data
+      }
+
     })
 
     socket.on('getPosts', async (channel) => {
