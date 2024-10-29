@@ -11,7 +11,8 @@ const PostSchema = new mongoose.Schema({
   postOwner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    autopopulate: { select: 'nickname', select:'profile' },
+    autopopulate: true
+    // autopopulate: { select: 'nickname', select:'profile' },
   },
 
   comments: [{

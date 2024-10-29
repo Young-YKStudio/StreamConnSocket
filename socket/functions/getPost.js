@@ -5,7 +5,9 @@ const Comment = require('../../models/Comment')
 const getPostRequest = async (channel) => {
   if(channel) {
     let foundChannel = await Channel.findOne({_id: channel}).populate('posts')
-    return foundChannel
+    let posts = foundChannel.posts
+    let sortedPosts = posts.sort((a, b) => b.createdAt - a.createdAt)
+    return sortedPosts
   }
 }
 
