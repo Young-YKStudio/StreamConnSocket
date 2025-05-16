@@ -3,6 +3,8 @@ const getPostRequest = require('./functions/getPost')
 const CreatePost = require('./functions/createPost')
 const CreateComment = require('./functions/createComment')
 const testChatFunctions = require('./functions/testChatFunctions')
+const AddLike = require('./functions/addLike')
+const RemoveLike = require('./functions/removeLike')
 
 exports.connection = (io) => {
   io.on('connection', (socket) => {
@@ -51,6 +53,22 @@ exports.connection = (io) => {
       let createdComment = await CreateComment(receivedData)
       if(createdComment){
         let channelData = await getPostRequest(receivedData.channelId)
+        io.emit('getPostsReturn', channelData)
+      }
+    })
+
+    socket.on('AddLike', async(receivedData) => {
+      let likeAdded = await AddLike(receivedData)
+      if(likeAdded){
+        let channelData = await getPostRequest(receivedData.channel)
+        io.emit('getPostsReturn', channelData)
+      }
+    })
+
+    socket.on('RemoveLike', async(receivedData) => {
+      let likeRemoved = await RemoveLike(receivedData)
+      if(likeRemoved) {
+        let channelData = await getPostRequest(receivedData.channel)
         io.emit('getPostsReturn', channelData)
       }
     })
